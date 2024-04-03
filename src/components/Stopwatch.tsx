@@ -1,6 +1,12 @@
 import { useDispatch } from 'react-redux';
-import {removeStopwatch, toggleStopwatch, updateStopwatchTime} from '../features/stopwatchesSlice';
-import {useEffect} from "react";
+import {
+  removeStopwatch,
+  resetStopwatch,
+  toggleStopwatch,
+  updateStopwatchName,
+} from '../features/stopwatchesSlice';
+import {ChangeEvent, useEffect, useState} from "react";
+import {formatTime} from "../utils/helpers.ts";
 
 interface StopwatchProps {
   id: string;
@@ -11,14 +17,26 @@ interface StopwatchProps {
 
 const Stopwatch = ({ id, name, time, isRunning }: StopwatchProps) => {
   const dispatch = useDispatch();
+  const [nameEdit, setNameEdit] = useState(name);
+  const [currentTime, setCurrentTime] = useState(time);
 
   useEffect(() => {
+    if (isRunning) {
+      const interval = setInterval(() => {
+        setCurrentTime(previousTime => previousTime + 10);
+      }, 10);
+      return () => clearInterval(interval);
+    }
+  }, [isRunning]);
+
+
+  /*useEffect(() => {
     let interval = null;
 
     if (isRunning) {
       interval = setInterval(() => {
         dispatch(updateStopwatchTime(id));
-      }, 1000);
+      }, 10);
     } else if (!isRunning && interval) {
       clearInterval(interval);
     }
@@ -28,10 +46,13 @@ const Stopwatch = ({ id, name, time, isRunning }: StopwatchProps) => {
         clearInterval(interval);
       }
     };
-  }, [isRunning, id, dispatch]);
+  }, [isRunning, id, dispatch]);*/
 
 
   const startStopToggle = () => {
+    if (!isRunning) {
+      setCurrentTime(time);
+    }
     dispatch(toggleStopwatch(id));
   };
 
@@ -39,27 +60,28 @@ const Stopwatch = ({ id, name, time, isRunning }: StopwatchProps) => {
     dispatch(removeStopwatch(id));
   };
 
-  const formatTime = (time: number): string => {
-    const milliseconds = Math.floor((time % 1000) / 100)
-    let seconds: string | number = Math.floor((time / 1000) % 60)
-    let minutes: string | number = Math.floor((time / (1000 * 60)) % 60)
-    let hours: string | number = Math.floor((time / (1000 * 60 * 60)) % 24);
+  const handleReset = () => {
+    dispatch(resetStopwatch(id));
+    setCurrentTime(0);
+  };
 
-    hours = (hours < 10) ? "0" + hours : hours;
-    minutes = (minutes < 10) ? "0" + minutes : minutes;
-    seconds = (seconds < 10) ? "0" + seconds : seconds;
+  const handleNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setNameEdit(e.target.value);
+  };
 
-    return `${hours}:${minutes}:${seconds}.${milliseconds}`;
+  const handleNameUpdate = () => {
+    dispatch(updateStopwatchName({ id, name: nameEdit }));
   };
 
   return (
     <div>
-      <div>{name}</div>
-      <div>{formatTime(time)}</div>
+      <input value={nameEdit} onChange={handleNameChange} onBlur={handleNameUpdate} />
+      <div>{formatTime(currentTime)}</div>
       <button onClick={startStopToggle}>
         {isRunning ? 'Pause' : 'Start'}
       </button>
-      <button onClick={handleRemove} >Remove</button>
+      <button onClick={handleReset}>Reset</button>
+      <button onClick={handleRemove}>Remove</button>
     </div>
   );
 };

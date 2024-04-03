@@ -46,10 +46,18 @@ export const stopwatchesSlice = createSlice({
         }
       }
     },
-    updateStopwatchTime: (state, action: PayloadAction<string>) => {
+    /*updateStopwatchTime: (state, action: PayloadAction<string>) => {
       const stopwatch = state.stopwatches.find(stopwatch => stopwatch.id === action.payload);
       if (stopwatch && stopwatch.isRunning) {
         stopwatch.time = Date.now() - stopwatch.startTime!;
+      }
+    },*/
+    resetStopwatch: (state, action: PayloadAction<string>) => {
+      const stopwatch = state.stopwatches.find(stopwatch => stopwatch.id === action.payload);
+      if (stopwatch) {
+        stopwatch.time = 0;
+        stopwatch.startTime = undefined;
+        stopwatch.isRunning = false;
       }
     },
     /*  updateStopwatchTime: (state, action: PayloadAction<{id: string; time: number}>) => {
@@ -62,9 +70,23 @@ export const stopwatchesSlice = createSlice({
     setFocusedStopwatch: (state, action: PayloadAction<string | null>) => {
       state.focusedStopwatchId = action.payload;
     },
+    updateStopwatchName: (state, action: PayloadAction<{id: string; name: string}>) => {
+      const stopwatch = state.stopwatches.find(stopwatch => stopwatch.id === action.payload.id);
+      if (stopwatch) {
+        stopwatch.name = action.payload.name;
+      }
+    },
   },
 });
 
-export const { addStopwatch, removeStopwatch, toggleStopwatch, updateStopwatchTime, setFocusedStopwatch } = stopwatchesSlice.actions;
+export const {
+  addStopwatch,
+  removeStopwatch,
+  toggleStopwatch,
+  //updateStopwatchTime,
+  resetStopwatch,
+  setFocusedStopwatch,
+  updateStopwatchName
+} = stopwatchesSlice.actions;
 
 export default stopwatchesSlice.reducer;
