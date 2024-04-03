@@ -1,36 +1,27 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../store';
 import Stopwatch from './Stopwatch';
-import { addStopwatch, setFocusedStopwatch } from '../features/stopwatchesSlice';
-import { v4 as uuidv4 } from 'uuid';
+import { setFocusedStopwatch } from '../features/stopwatchesSlice';
 
 const StopwatchesList = () => {
   const dispatch = useDispatch();
   const stopwatches = useSelector((state: RootState) => state.stopwatches.stopwatches);
   const focusedStopwatchId = useSelector((state: RootState) => state.stopwatches.focusedStopwatchId);
 
-  const addNewStopwatch = () => {
-    if (stopwatches.length < 10) {
-      dispatch(addStopwatch({ id: uuidv4(), name: '' }));
-    } else {
-      alert('Maximum number of stopwatches reached (10). Please remove some to add more');
-    }
-  };
+  if (stopwatches.length === 0) {
+    return <p className="text-center text-gray-500 text-lg">No stopwatches added yet 🤷🏻‍♀️</p>;
+  }
 
   return (
-    <div>
-      <button onClick={addNewStopwatch}>Add stopwatch</button>
-      <div>
-        {stopwatches.map((stopwatch) => (
-          <div
-            key={stopwatch.id}
-            className={`${focusedStopwatchId === stopwatch.id ? 'focused' : ''}`} //change this to TW classes
-            onClick={() => dispatch(setFocusedStopwatch(stopwatch.id))}
-          >
-            <Stopwatch {...stopwatch} />
-          </div>
-        ))}
-      </div>
+    <div className="flex flex-wrap gap-x-6 gap-y-10 mx-auto">
+      {stopwatches.map((stopwatch) => (
+        <div
+          key={stopwatch.id}
+          onClick={() => dispatch(setFocusedStopwatch(stopwatch.id))}
+        >
+          <Stopwatch {...stopwatch} focused={stopwatch.id === focusedStopwatchId} />
+        </div>
+      ))}
     </div>
   );
 };

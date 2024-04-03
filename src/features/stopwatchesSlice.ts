@@ -46,12 +46,6 @@ export const stopwatchesSlice = createSlice({
         }
       }
     },
-    /*updateStopwatchTime: (state, action: PayloadAction<string>) => {
-      const stopwatch = state.stopwatches.find(stopwatch => stopwatch.id === action.payload);
-      if (stopwatch && stopwatch.isRunning) {
-        stopwatch.time = Date.now() - stopwatch.startTime!;
-      }
-    },*/
     resetStopwatch: (state, action: PayloadAction<string>) => {
       const stopwatch = state.stopwatches.find(stopwatch => stopwatch.id === action.payload);
       if (stopwatch) {
@@ -60,13 +54,6 @@ export const stopwatchesSlice = createSlice({
         stopwatch.isRunning = false;
       }
     },
-    /*  updateStopwatchTime: (state, action: PayloadAction<{id: string; time: number}>) => {
-          const stopwatch = state.stopwatches.find(stopwatch => stopwatch.id === action.payload.id);
-          if (stopwatch) {
-              const elapsedTime = action.payload.time - stopwatch.startTime;
-              stopwatch.time += elapsedTime;
-          }
-      },*/
     setFocusedStopwatch: (state, action: PayloadAction<string | null>) => {
       state.focusedStopwatchId = action.payload;
     },
@@ -83,7 +70,6 @@ export const {
   addStopwatch,
   removeStopwatch,
   toggleStopwatch,
-  //updateStopwatchTime,
   resetStopwatch,
   setFocusedStopwatch,
   updateStopwatchName
