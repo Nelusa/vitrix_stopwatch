@@ -6,6 +6,6 @@
 
 @layer base {
   html {
-    @apply font-body
+    @apply font-body bg-gradient-to-tr from-sky-50 to-white min-h-screen;
   }
 }

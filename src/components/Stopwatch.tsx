@@ -10,6 +10,7 @@ import {classNames, formatTime} from "../utils/helpers.ts";
 import Button from "./Button.tsx";
 import Input from "./Input.tsx";
 import {TrashIcon} from "@heroicons/react/24/outline";
+import { motion } from 'framer-motion';
 
 interface StopwatchProps {
   id: string;
@@ -18,6 +19,19 @@ interface StopwatchProps {
   isRunning: boolean;
   focused: boolean;
 }
+
+const bounceInVariants = {
+  hidden: { scale: 0.5, opacity: 0 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: "spring",
+      stiffness: 260,
+      damping: 20,
+    },
+  },
+};
 
 const Stopwatch = ({ id, name, time, isRunning, focused }: StopwatchProps) => {
   const dispatch = useDispatch();
@@ -85,7 +99,13 @@ const Stopwatch = ({ id, name, time, isRunning, focused }: StopwatchProps) => {
   };
 
   return (
-    <div className={classNames("relative w-full flex flex-col gap-y-1 items-center rounded-2xl px-4 py-6 bg-white border border-4 cursor-pointer", focused ? "border-primary-600 shadow-2xl" : "border-gray-100 shadow-lg hover:border-gray-200 opacity-90")}>
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      exit="hidden"
+      variants={bounceInVariants}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className={classNames("relative w-full flex flex-col gap-y-1 items-center rounded-2xl px-4 py-6 bg-white border border-4 cursor-pointer", focused ? "border-primary-600 shadow-2xl" : "border-gray-100 shadow-lg hover:border-gray-200 opacity-90")}>
       <Button variant="error-icon" className="absolute right-0 top-0" onClick={handleRemove}>
         <TrashIcon width={16} />
       </Button>
@@ -113,7 +133,7 @@ const Stopwatch = ({ id, name, time, isRunning, focused }: StopwatchProps) => {
           <Button variant="tertiary" onClick={handleReset} className="flex-grow w-1/2 ">Reset</Button>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
