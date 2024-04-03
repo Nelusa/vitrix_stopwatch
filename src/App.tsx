@@ -1,10 +1,11 @@
+import StopwatchesList from "./components/StopwatchesList.tsx";
 
 function App() {
 
   return (
     <>
       <div>
-        PAGE
+        <StopwatchesList />
       </div>
     </>
   )
